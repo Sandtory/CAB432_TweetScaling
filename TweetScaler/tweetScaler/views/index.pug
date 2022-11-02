@@ -5,15 +5,19 @@ block content
   p Welcome to #{title}
 
   div#searchBox
-      input(type="text" name="search" id="search" placeholder="Twitter search word")
-      br
-      button.srcBtn search 
-      script(src="/javascripts/settRules.js") 
-      button.delBtn delete
-      button.getBtn get
-each tweet in allTweets
-  ul
-    li= tweet
+      //input(type="text" name="search" id="search" placeholder="Twitter search word")
+      //br
+      //button.srcBtn search 
+      //script(src="/javascripts/settRules.js") 
+      //button.delBtn delete
+      //button.getBtn get
+  
+  .home-search
+    form(action='/search' method='POST')
+      input.home-input(autofocus='' placeholder='Search for tweets' id='input' type='search' name='q')
+ 
+     
+  
 
      
  
