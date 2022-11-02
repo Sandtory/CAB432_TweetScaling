@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  div#searchBox
+      input(type="text" name="search" id="search" placeholder="Twitter search word")
+      br
+      button.srcBtn search 
+      script(src="/javascripts/settRules.js") 
+      button.delBtn delete
+      button.getBtn get
+each tweet in allTweets
+  ul
+    li= tweet
+
+     
+ 

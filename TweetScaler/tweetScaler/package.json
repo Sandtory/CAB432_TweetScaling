@@ -1,0 +1,25 @@
+{
+  "name": "tweetscaler",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^16.0.3",
+    "express": "~4.16.1",
+    "got": "^12.5.2",
+    "http": "^0.0.1-security",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "needle": "^3.1.0",
+    "oauth-1.0a": "^2.2.6",
+    "pug": "2.0.0-beta11",
+    "request": "^2.88.2",
+    "socket.io": "^4.5.3",
+    "twitter-api-v2": "^1.12.9"
+  }
+}
