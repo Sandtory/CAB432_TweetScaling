@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 const axios = require('axios');
 const needle = require("needle");
+const analyzer = require("./../services/sentimentAnalysis");
+const natural = require('natural');
+
 
 require('dotenv').config();
 
@@ -38,9 +41,6 @@ router.post('/search', function(req , res) {
         let rule = {value: `${searchWord} `, tag: `${searchWord}`, lang: 'en'};
         rules.push(rule);
         setRules(rules);
-        console.log(rules);
-        console.log(response);
-        
         //return result
         res.json({ response });
         streamConnect(0);
@@ -130,14 +130,20 @@ function streamConnect(retryAttempt) {
           const json = JSON.parse(data);
           console.log(json);
           //console.log(json.data.id);
-
+          console.log(analyzer.analyzeTweet(json.data.text));
+          var spellcheck = new natural.Spellcheck(json.data.text);
+          spellcheck.isCorrect(json.data.text); 
+          spellcheck.getCorrections(json.data.text);
+          console.log(json);
+          console.log(spellcheck);
           params = {
             TableName: 'TweetAnalysis',
             Item: {
                 'HASHKEY': 'qut-username',
                 'qut-username': 'n11398141@qut.edu.au',
                 "TWITTER_ID": `${json.data.id}`,
-                'Text': `${json.data.text}`
+                'Text': `${json.data.text}`,
+                'Tag': `${tag}`
               }
           }
           docClient.put(params, function(err, data) {
@@ -146,8 +152,7 @@ function streamConnect(retryAttempt) {
             } else {
                 console.log("Success", data);
             }
-          });
-          //console.log(params);
+          });            
           // A successful connection resets retry count.
           retryAttempt = 0;
         } catch (e) {
@@ -174,6 +179,13 @@ function streamConnect(retryAttempt) {
     });
 
     return stream;
+}
+
+function spellcheck(input){
+  let spellcheck = new natural.Spellcheck(input);
+  spellcheck.isCorrect(input); 
+  spellcheck.getCorrections(input);
+  return spellcheck;
 }
 
 module.exports = router;
