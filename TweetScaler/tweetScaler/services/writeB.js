@@ -9,7 +9,7 @@ var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
 var params = {
   RequestItems: {
-    "TweetAnalysis": [
+    "newAnalysis": [
        {
          PutRequest: {
            Item: {

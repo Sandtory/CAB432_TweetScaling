@@ -15,14 +15,14 @@ const wordArray = fs.readFileSync(wordListPath, 'utf8').split('\n');
 
 const spellCorrector = new SpellCorrector();
 spellCorrector.loadDictionary();
-
+ 
 
 module.exports = {
     analyzeTweet(tweet){
     //const { tweet } = req.body;
     const lexedTweet = aposToLexForm(tweet);
     const casedTweet = lexedTweet.toLowerCase();
-    const alphaOnlyTweet = casedTweet.replace('/[^a-zA-Z\s]+/g', '');
+    const alphaOnlyTweet = casedTweet.replace(/[^a-zA-Z0-9]/g,'_');
   
     const { WordTokenizer } = natural;
     const tokenizer = new WordTokenizer();
@@ -38,5 +38,5 @@ module.exports = {
     const analysis = analyzer.getSentiment(filteredTweet);
   
     return analysis;
-    }
+  }
 };

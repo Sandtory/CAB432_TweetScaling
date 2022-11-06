@@ -3,6 +3,7 @@ var router = express.Router();
 const axios = require('axios');
 const needle = require("needle");
 const analyzer = require("./../services/sentimentAnalysis");
+const spellchecker = require("./../services/spellchecker");
 const natural = require('natural');
 
 
@@ -19,7 +20,8 @@ const token = process.env.TWITTER_BEARER_TOKEN;
 const rulesURL = 'https://api.twitter.com/2/tweets/search/stream/rules';
 const streamURL = 'https://api.twitter.com/2/tweets/search/stream';
 let params;
-let rules = []
+let rules = [];
+
 
 
 /* GET home page. */
@@ -36,19 +38,19 @@ router.post('/search', function(req , res) {
     try {
         // Make request
         const response = await getAllRules();
-        deleteAllRules(rules);
         deleteAllRules(response);
+        deleteAllRules(rules);
         let rule = {value: `${searchWord} `, tag: `${searchWord}`, lang: 'en'};
         rules.push(rule);
         setRules(rules);
         //return result
         res.json({ response });
-        streamConnect(0);
     } catch (e) {
         console.log(e);
         console.error(e);
         process.exit(1);
     }
+    streamConnect(0);
   })();
 });
 
@@ -129,15 +131,11 @@ function streamConnect(retryAttempt) {
         try {
           const json = JSON.parse(data);
           console.log(json);
-          //console.log(json.data.id);
-          console.log(analyzer.analyzeTweet(json.data.text));
-          var spellcheck = new natural.Spellcheck(json.data.text);
-          spellcheck.isCorrect(json.data.text); 
-          spellcheck.getCorrections(json.data.text);
-          console.log(json);
-          console.log(spellcheck);
+          //console.log(analyzer.analyzeTweet(json.data.text));
+          //spellchecker.getSpellcheck(json.data.text);
+          //console.log(checked);
           params = {
-            TableName: 'TweetAnalysis',
+            TableName: 'newAnalysis',
             Item: {
                 'HASHKEY': 'qut-username',
                 'qut-username': 'n11398141@qut.edu.au',
@@ -152,7 +150,7 @@ function streamConnect(retryAttempt) {
             } else {
                 console.log("Success", data);
             }
-          });            
+          });   
           // A successful connection resets retry count.
           retryAttempt = 0;
         } catch (e) {
@@ -181,11 +179,6 @@ function streamConnect(retryAttempt) {
     return stream;
 }
 
-function spellcheck(input){
-  let spellcheck = new natural.Spellcheck(input);
-  spellcheck.isCorrect(input); 
-  spellcheck.getCorrections(input);
-  return spellcheck;
-}
+
 
 module.exports = router;
